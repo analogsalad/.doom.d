@@ -128,6 +128,9 @@
       :desc "reload/doom"
       "x" 'doom/reload)
 
+(map! :leader
+      :desc "edit code block in org-mode"
+      "o c" 'org-edit-src-code)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!

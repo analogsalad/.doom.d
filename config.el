@@ -8,8 +8,19 @@
 (setq user-full-name "analogsalad"
       user-mail-address "hey@analogsalad.com")
 
-;; Start Emacs Fullscreen
+;; ## Editor Settings ##
+(setq display-line-numbers-type t)
+(setq-default fill-column 120)
+
+;; Start emacs fullscreen:
 (add-hook 'after-init-hook 'toggle-frame-fullscreen)
+
+;; Set whitespace style:
+(setq-default whitespace-style '(face tabs tab-mark spaces space-mark trailing))
+(global-whitespace-mode +1)
+
+;; ## Theme Settings ##
+(setq doom-theme 'doom-xcode)
 
 ;; ## Font Settings ##
 ;; TODO: Find out where doom-variable-pitch-font and doom-serif-font is used.
@@ -20,11 +31,6 @@
       doom-unicode-font (font-spec :family "IBM Plex Mono")
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
-
-;; ## Theme Settings ##
-(setq doom-theme 'doom-xcode)
-
-
 ;; ## Org-Mode Settings ##
 ;; Completed items get timestamped:
 (setq org-log-done 'time)
@@ -32,32 +38,26 @@
 (setq org-emphasis-regexp-components
   '("-[:space:]('\"{" "-[:space:].,:!?;'\")}\\[" "[:space:]" "." 5))
 
-
-;; ## Editor Settings ##
-(setq display-line-numbers-type t)
-(setq-default fill-column 120)
-
-;; Set whitespace style:
-(setq-default whitespace-style '(face tabs tab-mark spaces space-mark trailing))
-(global-whitespace-mode +1)
-
-
-;; ## crystal-mode ##
-;; Register crystalline as a language backend.
+;; ## crystal-mode settings##
+;; Register crystalline as a language backend:
 (with-eval-after-load 'lsp-mode
   (add-to-list 'lsp-language-id-configuration
                '(crystal-mode . "crystal"))
   (lsp-register-client
   (make-lsp-client :new-connection (lsp-stdio-connection '("crystalline"))
                    :activation-fn (lsp-activate-on "crystal")
-                   :priority '1
+                   ;:completion-in-comments? nil
+                   :priority 1
                    :server-id 'crystalline)))
 
-;; Add icon for crystal extension (at the moment only works after a reload)
-;;(treemacs-define-custom-icon (all-the-icons-fileicon "crystal") "cr")
+; TODO: Remove the following snippets after finding a solution.
+;(treemacs-create-icon (all-the-icons-fileicon "crystal") "cr"))
+;(treemacs-create-icon (format " %s " (all-the-icons-fileicon "crystal"))("cr"))
+;(after! 'treemacs
+;       (require 'all-the-icons)
+;       (treemacs-define-custom-icon (all-the-icons-file-icon "crystal") "cr"))
 
-
-;; ## go-mode ##
+;; ## go-mode settings ##
 ;; Use goimports instead of go-fmt
 (setq gofmt-command "goimports")
 
@@ -77,28 +77,29 @@
 ;;                            (flycheck-golangci-lint-setup)
 ;;                            (setq flycheck-local-checkers '((lsp . ((next-checkers . (golangci-lint))))))))
 
-
-;; ## web-mode ##
+;; ## web-mode settings ##
 ;; Register .gohtml as a web-mode target
 (add-to-list 'auto-mode-alist '("\\.gohtml\\'" . web-mode))
 
 
-;; ## lsp-mode ##
+;; ## lsp-mode settings ##
 ;; lsp tries to render links on treemacs, destroying its functionality.
 ;; as a work around we disable this offending setting.
 (setq lsp-enable-links nil)
 
+;; Slow lsp down
+;(setq lsp-idle-delay .5)
 
-;;## lisp-mode ##
+;;## lisp-mode settings ##
 ;; Make sly open vertically instead of horizontally
 (after! sly
         (set-popup-rule! "^\\*sly-mrepl" :ignore t))
 
 
-;; ## treemacs ##
-;; Make treemacs display only the current project
+;; ## treemacs settings ##
+;; Make treemacs display only the current project:
 (add-hook 'projectile-after-switch-project-hook 'treemacs-display-current-project-exclusively)
-;; Make treemacs display colorful icons
+;; Make treemacs display colorful icons:
 (setq doom-themes-treemacs-theme "doom-colors")
 
 ;; ## Key Binds ##
@@ -117,6 +118,12 @@
     :leader
     :desc "gofmt"
     "m f" 'gofmt)
+
+(map! :after crystal-mode
+      :map crystal-mode-map
+      :leader
+      :desc "crystal format"
+      "m f" 'crystal-tool-format)
 
 (map! :after go-mode
     :map go-mode-map

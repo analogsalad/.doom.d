@@ -11,13 +11,13 @@
 ;; ## Editor Settings ##
 (setq display-line-numbers-type t)
 (setq-default fill-column 120)
-
+(setq fancy-splash-image "~/Pictures/Brainstorm.jpg")
 ;; Start emacs fullscreen:
-(add-hook 'after-init-hook 'toggle-frame-fullscreen)
+;(add-hook 'after-init-hook 'toggle-frame-fullscreen)
 
 ;; Set whitespace style:
 (setq-default whitespace-style '(face tabs tab-mark spaces space-mark trailing))
-(global-whitespace-mode +1)
+;(global-whitespace-mode +1)
 
 ;; ## Theme Settings ##
 (setq doom-theme 'doom-xcode)
@@ -81,6 +81,9 @@
 ;; Register .gohtml as a web-mode target
 (add-to-list 'auto-mode-alist '("\\.gohtml\\'" . web-mode))
 
+;; ## js2-mode settings ##
+;; Enable eslint integration:
+(setq-hook! 'js2-mode-hook flycheck-checker 'javascript-eslint)
 
 ;; ## lsp-mode settings ##
 ;; lsp tries to render links on treemacs, destroying its functionality.
@@ -113,6 +116,10 @@
       :desc "toggle documentation"
       "t k" 'lsp-ui-doc-glance)
 
+(map! :leader
+      :desc "comment line"
+      "l c" 'comment-line)
+
 (map! :after go-mode
     :map go-mode-map
     :leader
@@ -130,6 +137,24 @@
     :leader
     :desc "godoc at point"
     "m k" 'godoc-at-point)
+
+(map! :after rjsx-mode
+      :map rjsx-mode-map
+      :leader
+      :desc "lsp format"
+      "m f" 'lsp-format-buffer)
+
+(map! :after web-mode
+      :map web-mode-map
+      :leader
+      :desc "editorconfig format"
+      "m f" 'editorconfig-format-buffer)
+
+(map! :after scss-mode
+      :map scss-mode-map
+      :leader
+      :desc "editorconfig format"
+      "m f" 'editorconfig-format-buffer)
 
 (map! :leader
       :desc "reload/doom"

@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: comment_result
+# key: /cmnt-res
+# --
+
+# => $1

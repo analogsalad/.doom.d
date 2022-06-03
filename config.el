@@ -33,6 +33,11 @@
       doom-unicode-font (font-spec :family "IBM Plex Mono")
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
+;; Set cursor faces and colors:
+(setq evil-normal-state-cursor '(box "cyan")
+      evil-insert-state-cursor '(box "tomato")
+      evil-visual-state-cursor '(hollow "purple"))
+
 ;; ## Org-Mode Settings ##
 ;; Completed items get timestamped:
 (setq org-log-done 'time)
@@ -52,13 +57,6 @@
                    :completion-in-comments? nil
                    :priority 1
                    :server-id 'crystalline)))
-
-; TODO: Remove the following snippets after finding a solution.
-; Issue #1: The icons don't load unless you manually run doom/reload
-; Issue #2: The icons are sized much bigger than the already defined icons
-;(treemacs-define-custom-icon (all-the-icons-alltheicon "html5" :height 1.00) "ecr")
-;(treemacs-define-custom-icon (format " %s "(all-the-icons-alltheicon "html5")) "ecr")
-;(treemacs-define-custom-icon (format " %s "(all-the-icons-fileicon "crystal")) "cr")
 
 ;; ## go-mode settings ##
 ;; Use goimports instead of go-fmt
@@ -125,6 +123,10 @@
 (add-hook 'projectile-after-switch-project-hook 'treemacs-display-current-project-exclusively)
 ;; Make treemacs display colorful icons:
 (setq doom-themes-treemacs-theme "doom-colors")
+; TODO: Remove the following snippets after finding a solution.
+; Issue #1: The icons don't load unless you manually run doom/reload
+(treemacs-define-custom-icon (format "  %s"(all-the-icons-fileicon "crystal" :height .9 :width .9 :face 'all-the-icons-purple)) "cr")
+(treemacs-define-custom-icon (format "  %s"(all-the-icons-alltheicon "html5" :height .9 :width .9 :face 'all-the-icons-orange)) "ecr")
 
 ;; ## Key Binds ##
 (setq evil-escape-key-sequence "jj")

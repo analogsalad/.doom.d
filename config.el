@@ -12,6 +12,8 @@
 (setq display-line-numbers-type t)
 (setq-default fill-column 120)
 (setq fancy-splash-image "~/Pictures/Brainstorm.jpg")
+
+(setq highlight-indent-guides-method 'column)
 ;; Start emacs fullscreen:
 ;(add-hook 'after-init-hook 'toggle-frame-fullscreen)
 
@@ -43,19 +45,20 @@
 (with-eval-after-load 'lsp-mode
   (add-to-list 'lsp-language-id-configuration
                '(crystal-mode . "crystal"))
+
   (lsp-register-client
   (make-lsp-client :new-connection (lsp-stdio-connection '("crystalline"))
                    :activation-fn (lsp-activate-on "crystal")
-                   ;:completion-in-comments? nil
+                   :completion-in-comments? nil
                    :priority 1
                    :server-id 'crystalline)))
 
 ; TODO: Remove the following snippets after finding a solution.
-;(treemacs-create-icon (all-the-icons-fileicon "crystal") "cr"))
-;(treemacs-create-icon (format " %s " (all-the-icons-fileicon "crystal"))("cr"))
-;(after! 'treemacs
-;       (require 'all-the-icons)
-;       (treemacs-define-custom-icon (all-the-icons-file-icon "crystal") "cr"))
+; Issue #1: The icons don't load unless you manually run doom/reload
+; Issue #2: The icons are sized much bigger than the already defined icons
+;(treemacs-define-custom-icon (all-the-icons-alltheicon "html5" :height 1.00) "ecr")
+;(treemacs-define-custom-icon (format " %s "(all-the-icons-alltheicon "html5")) "ecr")
+;(treemacs-define-custom-icon (format " %s "(all-the-icons-fileicon "crystal")) "cr")
 
 ;; ## go-mode settings ##
 ;; Use goimports instead of go-fmt
@@ -67,7 +70,7 @@
 
 ;; Making flycheck work with LSP
 ;; See: https://github.com/weijiangan/flycheck-golangci-lint/issues/8
-;;(defvar-local flycheck-local-checkers nil)
+;;(defvar-Local flycheck-local-checkers nil)
 ;;  (defun +flycheck-checker-get(fn checker property)
 ;;    (or (alist-get property (alist-get checker flycheck-local-checkers))
 ;;        (funcall fn checker property)))
@@ -78,8 +81,14 @@
 ;;                            (setq flycheck-local-checkers '((lsp . ((next-checkers . (golangci-lint))))))))
 
 ;; ## web-mode settings ##
-;; Register .gohtml as a web-mode target
+;; Register extensions as web-mode targets:
 (add-to-list 'auto-mode-alist '("\\.gohtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.ecr\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+
+;; Use the erb engine in ecr files:
+(setq web-mode-engines-alist
+      '(("erb" . "\\.ecr\\'")))
 
 ;; ## js2-mode settings ##
 ;; Enable eslint integration:
@@ -90,8 +99,20 @@
 ;; as a work around we disable this offending setting.
 (setq lsp-enable-links nil)
 
+;; lsp performance tuning:
+(setq gc-cons-threshold 100000000)
+(setq read-process-output-max (* 1024 1024))
+
 ;; Slow lsp down
-;(setq lsp-idle-delay .5)
+;;(setq lsp-idle-delay 0.800)
+(after! lsp-mode
+ (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.cache\\'")
+ (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.parcel-cache\\'")
+ (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.git\\'")
+ (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\build\\'")
+ (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\lib\\'")
+ (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\node_modules\\'"))
+
 
 ;;## lisp-mode settings ##
 ;; Make sly open vertically instead of horizontally
